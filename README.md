@@ -1,6 +1,6 @@
 # `MetaGymLand Solidity contracts`
 
-MetaGymLand Web 3 app to Gamify daily stretches with AI and blockchain
+MetaGymLand Wellness Metaverse Powered with AI and NFTs
 
 https://metagymland.com/
 
