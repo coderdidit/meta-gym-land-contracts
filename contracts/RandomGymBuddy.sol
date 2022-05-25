@@ -11,14 +11,7 @@ error AlreadyInitialized();
 error NeedMoreCryptoSent();
 error RangeOutOfBounds();
 
-contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
-    // Types
-    enum Breed {
-        PUG,
-        SHIBA_INU,
-        ST_BERNARD
-    }
-
+contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     // Chainlink VRF Variables
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     uint64 private immutable i_subscriptionId;
@@ -30,9 +23,8 @@ contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     // NFT Variables
     uint256 private i_mintFee;
     uint256 public s_tokenCounter;
-    mapping(uint256 => Breed) private s_tokenIdToBreed;
-    uint256 internal constant MAX_CHANCE_VALUE = 100;
-    string[] internal s_dogTokenUris;
+
+    uint256 internal constant MAX_ID_OF_METADATA_FILE = 100;
     bool private s_initialized;
 
     // VRF Helpers
@@ -45,13 +37,12 @@ contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     constructor(
         address vrfCoordinatorV2,
         uint64 subscriptionId,
-        bytes32 gasLane, // keyHash
+        bytes32 gasLane,
         uint256 mintFee,
         uint32 callbackGasLimit
     )
-        // string[3] memory dogTokenUris // I know this upfront, token/item id will be randomised
         VRFConsumerBaseV2(vrfCoordinatorV2)
-        ERC721("Random IPFS NFT", "RIN")
+        ERC721("MetaGymLAnd GymBuddy", "MGLGB")
     {
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gasLane = gasLane;
@@ -84,15 +75,12 @@ contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         address nftOwner = s_requestIdToSender[requestId];
         uint256 newItemId = s_tokenCounter;
         s_tokenCounter = s_tokenCounter + 1;
-        uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE;
+        uint256 uriMetadataFileID = randomWords[0] % MAX_ID_OF_METADATA_FILE;
+
         _safeMint(nftOwner, newItemId);
-        string memory tokenUri = _getTokenUriWithItemId(itemId);
+        string memory tokenUri = _getTokenUriWithItemId(uriMetadataFileID);
         _setTokenURI(newItemId, tokenUri);
         emit NftMinted(newItemId, nftOwner);
-    }
-
-    function getChanceArray() public pure returns (uint256[3] memory) {
-        return [10, 30, MAX_CHANCE_VALUE];
     }
 
     function _initializeContract() private {
@@ -102,7 +90,11 @@ contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         s_initialized = true;
     }
 
-    function _getTokenUriWithItemId(uint32 itemId) returns (string memory) {
+    function _getTokenUriWithItemId(uint256 uriMetadataFileID)
+        private
+        pure
+        returns (string memory)
+    {
         string memory cid = "QmVM2UpxbR1a9MdBSW7c4C6pZmhxcji8wsAsUEM2Jkezrt";
         string memory baseUri = "https://gateway.pinata.cloud/ipfs/";
         string memory tokenMetadataURI = string(
@@ -110,33 +102,28 @@ contract RandomIpfsNft is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
                 baseUri,
                 cid,
                 "/gb",
-                Strings.toString(itemId),
+                Strings.toString(uriMetadataFileID),
                 ".json"
             )
         );
         return tokenMetadataURI;
     }
 
-    // this willbe get gymBuddy Id
-    function getGymBuddyIdFromModdedRng(uint256 moddedRng)
-        public
-        pure
-        returns (Breed)
-    {
-        uint256 cumulativeSum = 0;
-        uint256[3] memory chanceArracy = getChanceArray();
-        for (uint256 i = 0; i < chanceArracy.length; i++) {
-            if (
-                moddedRng >= cumulativeSum &&
-                moddedRng < cumulativeSum + chanceArracy[i]
-            ) {
-                return Breed(i);
-            }
-            cumulativeSum = cumulativeSum + chanceArracy[i];
-        }
-        revert RangeOutOfBounds();
+    // keeping this function for reference as it will be used in NFT generation logic
+    // to populate level/rarity attribute
+    function getChanceArray() public pure returns (uint256[4] memory) {
+        /**
+        Rarity or Level are driven by Metadata file ids in ipfs
+        gb{id}.json
+        0 - 4 Mystic => example gb3.json
+        5 - 14 Legendary
+        15 - 29 Rare
+        30 - 100 Common
+        */
+        return [5, 15, 30, MAX_ID_OF_METADATA_FILE];
     }
 
+    // to be able to withdraw income from mint fees
     function withdraw() public onlyOwner {
         uint256 amount = address(this).balance;
         (bool success, ) = payable(msg.sender).call{value: amount}("");
