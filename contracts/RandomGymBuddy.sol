@@ -26,7 +26,7 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenCounter;
 
-    uint256 internal constant MAX_ID_OF_METADATA_FILE = 100;
+    uint256 internal constant MAX_ID_OF_METADATA_FILE = 99;
     bool private s_initialized;
 
     // VRF Helpers
@@ -97,8 +97,8 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         pure
         returns (string memory)
     {
-        string memory cid = "QmVM2UpxbR1a9MdBSW7c4C6pZmhxcji8wsAsUEM2Jkezrt";
-        string memory baseUri = "https://gateway.pinata.cloud/ipfs/";
+        string memory cid = "bafybeihb2yeriz2y5fbrxbgyvmo7k54ejzwto3qlmf3bvqj7bmwxmequkm";
+        string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(
                 baseUri,

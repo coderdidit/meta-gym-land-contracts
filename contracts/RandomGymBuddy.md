@@ -23,3 +23,13 @@ this contract had to low callbackGasLimit
 working contract with 
 callbackGasLimit: 300000
 
+### example NFT Storage url
+
+ipfs://bafybeietlso25ekzdwzfsbdu3lknwswfrh77woxaokpduj5jaebbeomhay/gb1.png
+https://nftstorage.link/ipfs/bafybeietlso25ekzdwzfsbdu3lknwswfrh77woxaokpduj5jaebbeomhay/gb1.png
+
+ipfs://bafybeihb2yeriz2y5fbrxbgyvmo7k54ejzwto3qlmf3bvqj7bmwxmequkm/gb10.json
+
+
+
+
