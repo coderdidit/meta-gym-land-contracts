@@ -15,7 +15,7 @@ contract DemoNFTContract is ERC721URIStorage, Ownable {
         marketplaceAddress = _marketplaceAddress;
         // automatically mint tokens to the contract deployer
         createToken(
-            "https://ipfs.moralis.io:2053/ipfs/QmeBjJN594ZqAnTcR6oaQe7GP2svbzz3ytiMnyJgxCH8bR/metadata/0000000000000000000000000000000000000000000000000000000000000003.json"
+            "ipfs://bafkreidhxnlfze4kylymxxqtgb32tde332mqzrial7ha44tznwfcyezcre"
         );
     }
 
