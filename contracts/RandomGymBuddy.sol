@@ -3,6 +3,7 @@ pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import"@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "hardhat/console.sol";
@@ -22,7 +23,8 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
 
     // NFT Variables
     uint256 private i_mintFee;
-    uint256 public s_tokenCounter;
+    using Counters for Counters.Counter;
+    Counters.Counter private s_tokenCounter;
 
     uint256 internal constant MAX_ID_OF_METADATA_FILE = 100;
     bool private s_initialized;
@@ -72,9 +74,9 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         internal
         override
     {
+        s_tokenCounter.increment();
         address nftOwner = s_requestIdToSender[requestId];
-        uint256 newItemId = s_tokenCounter;
-        s_tokenCounter = s_tokenCounter + 1;
+        uint256 newItemId = s_tokenCounter.current();
         uint256 uriMetadataFileID = randomWords[0] % MAX_ID_OF_METADATA_FILE;
 
         _safeMint(nftOwner, newItemId);
@@ -109,21 +111,6 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         return tokenMetadataURI;
     }
 
-    // keeping this function for reference as it will be used in NFT generation logic
-    // to populate level/rarity attribute
-    function getChanceArray() public pure returns (uint256[4] memory) {
-        /**
-        Rarity or Level are driven by Metadata file ids in ipfs
-        gb{id}.json
-        0 - 4 Mystic => example gb3.json
-        5 - 14 Legendary
-        15 - 29 Rare
-        30 - 100 Common
-        */
-        return [5, 15, 30, MAX_ID_OF_METADATA_FILE];
-    }
-
-    // to be able to withdraw income from mint fees
     function withdraw() public onlyOwner {
         uint256 amount = address(this).balance;
         (bool success, ) = payable(msg.sender).call{value: amount}("");
@@ -139,6 +126,6 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     }
 
     function getTokenCounter() public view returns (uint256) {
-        return s_tokenCounter;
+        return s_tokenCounter.current();
     }
 }
