@@ -4,7 +4,7 @@ pragma solidity ^0.8.8;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import"@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
@@ -31,6 +31,15 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
 
     // VRF Helpers
     mapping(uint256 => address) public s_requestIdToSender;
+
+    struct GymBuddyNft {
+        address owner;
+        string tokenUri;
+        uint256 tokenId;
+        uint256 timestamp;
+    }
+
+    GymBuddyNft[] public nftCollection;
 
     // Events
     event NftRequested(uint256 indexed requestId, address requester);
@@ -82,7 +91,33 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         _safeMint(nftOwner, newItemId);
         string memory tokenUri = _getTokenUriWithItemId(uriMetadataFileID);
         _setTokenURI(newItemId, tokenUri);
+
+        GymBuddyNft memory mintedNft = GymBuddyNft({
+            owner: nftOwner,
+            tokenUri: tokenUri,
+            tokenId: newItemId,
+            timestamp: block.timestamp
+        });
+
+        nftCollection.push(mintedNft);
+
         emit NftMinted(newItemId, nftOwner);
+    }
+
+    function getMostRecentlyMinted()
+        public
+        view
+        returns (GymBuddyNft[] memory)
+    {
+        uint256 currentSize = nftCollection.length;
+        if (currentSize < 3) {
+            return nftCollection;
+        }
+        GymBuddyNft[] memory mostRecentMints = new GymBuddyNft[](3);
+        mostRecentMints[0] = nftCollection[currentSize - 3];
+        mostRecentMints[0] = nftCollection[currentSize - 2];
+        mostRecentMints[0] = nftCollection[currentSize - 1];
+        return mostRecentMints;
     }
 
     function _initializeContract() private {
@@ -97,7 +132,8 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         pure
         returns (string memory)
     {
-        string memory cid = "bafybeihb2yeriz2y5fbrxbgyvmo7k54ejzwto3qlmf3bvqj7bmwxmequkm";
+        string
+            memory cid = "bafybeihb2yeriz2y5fbrxbgyvmo7k54ejzwto3qlmf3bvqj7bmwxmequkm";
         string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(

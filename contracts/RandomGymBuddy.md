@@ -24,6 +24,9 @@ working contract with
 callbackGasLimit: 300000
 - 0x0650c5faeaec2193f7d0744cf90993277f530b74
 (with cid from files in nftstorage)
+- 0xB32d869e7BF0C9DF8c2cfb4c14E8B00d462A3e9c
+(with cid from files in nftstorage)
+callbackGasLimit: 400000
 
 ### example NFT Storage url
 
