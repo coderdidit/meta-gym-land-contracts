@@ -32,15 +32,6 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
     // VRF Helpers
     mapping(uint256 => address) public s_requestIdToSender;
 
-    struct GymBuddyNft {
-        address owner;
-        string tokenUri;
-        uint256 tokenId;
-        uint256 timestamp;
-    }
-
-    GymBuddyNft[] public nftCollection;
-
     // Events
     event NftRequested(uint256 indexed requestId, address requester);
     event NftMinted(uint256 gymBuddyId, address minter);
@@ -92,32 +83,7 @@ contract RandomGymBuddy is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
         string memory tokenUri = _getTokenUriWithItemId(uriMetadataFileID);
         _setTokenURI(newItemId, tokenUri);
 
-        GymBuddyNft memory mintedNft = GymBuddyNft({
-            owner: nftOwner,
-            tokenUri: tokenUri,
-            tokenId: newItemId,
-            timestamp: block.timestamp
-        });
-
-        nftCollection.push(mintedNft);
-
         emit NftMinted(newItemId, nftOwner);
-    }
-
-    function getMostRecentlyMinted()
-        public
-        view
-        returns (GymBuddyNft[] memory)
-    {
-        uint256 currentSize = nftCollection.length;
-        if (currentSize < 3) {
-            return nftCollection;
-        }
-        GymBuddyNft[] memory mostRecentMints = new GymBuddyNft[](3);
-        mostRecentMints[0] = nftCollection[currentSize - 3];
-        mostRecentMints[0] = nftCollection[currentSize - 2];
-        mostRecentMints[0] = nftCollection[currentSize - 1];
-        return mostRecentMints;
     }
 
     function _initializeContract() private {
