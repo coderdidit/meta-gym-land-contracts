@@ -13,8 +13,11 @@ Moralis is used to listen/watch Contract Events on the `NFTERC1155Marketplace.so
 
 # Disclaimer
 
-location `/contracts/legacy` contracts froj this directory are currently turn off
+location `/contracts/legacy` holds contracts that are currently turned off
 
-MetaGymLand was using intially `ERC1155` for avatars
+MetaGymLand was using intially `ERC1155` standard for avatars
 
-Now MetaGymLand moved to `ERC721` standard for the `GymBuddies`
+Now MetaGymLand moved to `ERC721` standard for the `GymBuddies` NFTs
+
+Hence the `NFTERC1155Marketplace.sol` is temporary turned off
+
