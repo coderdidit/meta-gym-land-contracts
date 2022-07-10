@@ -26,4 +26,3 @@ contract DemoNFTContract is ERC721URIStorage, Ownable {
         return itemID;
     }
 }
-
