@@ -29,7 +29,7 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenCounter;
 
-    uint256 internal constant MAX_ID_OF_METADATA_FILE = 3;
+    uint256 internal constant MAX_ID_OF_METADATA_FILE = 2;
     bool private s_initialized;
 
     // VRF Helpers
@@ -102,7 +102,7 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
         returns (string memory)
     {
         string
-            memory cid = "bafybeihb2yeriz2y5fbrxbgyvmo7k54ejzwto3qlmf3bvqj7bmwxmequkm";
+            memory cid = "bafybeigtxk3hoji67vd5gi66jxe774pdtfagdc7bb6mwdgfirv5zhdtorm";
         string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(
