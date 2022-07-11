@@ -4,7 +4,6 @@ pragma solidity ^0.8.8;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
@@ -30,13 +29,12 @@ contract RandomGymBuddyWithSnap is
 
     // NFT Variables
     uint256 private i_mintFee;
-    using Counters for Counters.Counter;
-    Counters.Counter private s_tokenCounter;
 
     // this is to make it between 100 - 102
     uint256 internal constant OFFSET_OF_METADATA_FILE_ID = 100;
     uint256 internal constant MAX_ID_OF_METADATA_FILE = 2;
     bool private s_initialized;
+    uint256 internal s_tokenCounter = OFFSET_OF_METADATA_FILE_ID - 1;
 
     // VRF Helpers
     mapping(uint256 => address) public s_requestIdToSender;
@@ -61,11 +59,6 @@ contract RandomGymBuddyWithSnap is
         i_mintFee = mintFee;
         i_callbackGasLimit = callbackGasLimit;
         _initializeContract();
-
-        // start from offset
-        for (i = 0; i < OFFSET_OF_METADATA_FILE_ID; i++) {
-            s_tokenCounter.increment();
-        }
     }
 
     function requestNft() public payable returns (uint256 requestId) {
@@ -88,9 +81,9 @@ contract RandomGymBuddyWithSnap is
         internal
         override
     {
-        s_tokenCounter.increment();
+        s_tokenCounter += 1;
         address nftOwner = s_requestIdToSender[requestId];
-        uint256 newItemId = s_tokenCounter.current();
+        uint256 newItemId = s_tokenCounter;
         uint256 uriMetadataFileID = (randomWords[0] % MAX_ID_OF_METADATA_FILE) +
             OFFSET_OF_METADATA_FILE_ID;
 
@@ -114,7 +107,7 @@ contract RandomGymBuddyWithSnap is
         returns (string memory)
     {
         string
-            memory cid = "bafybeidanoswtz7zj3oqe6n6a4bbs4ulscxsyzivbgd2fvusokc4sz6zjy";
+            memory cid = "bafybeihami73qo4jfz76mqzqjk35jigkuqp4iglqna3g4cdlx5u6cv6f6q";
         string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(
@@ -143,6 +136,6 @@ contract RandomGymBuddyWithSnap is
     }
 
     function getTokenCounter() public view returns (uint256) {
-        return s_tokenCounter.current();
+        return s_tokenCounter;
     }
 }
