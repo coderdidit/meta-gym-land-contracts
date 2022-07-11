@@ -12,10 +12,14 @@ error AlreadyInitialized();
 error NeedMoreCryptoSent();
 error RangeOutOfBounds();
 
-// Smart contract ot mint a short collections 
+// Smart contract ot mint a short collections
 // that has links to snapchat lenses
 // a lens includes coresponding GymBuddy
-contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable {
+contract RandomGymBuddyWithSnap is
+    ERC721URIStorage,
+    VRFConsumerBaseV2,
+    Ownable
+{
     // Chainlink VRF Variables
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     uint64 private immutable i_subscriptionId;
@@ -29,6 +33,8 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenCounter;
 
+    // this is to make it between 100 - 102
+    uint256 internal constant OFFSET_OF_METADATA_FILE_ID = 100;
     uint256 internal constant MAX_ID_OF_METADATA_FILE = 2;
     bool private s_initialized;
 
@@ -55,6 +61,11 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
         i_mintFee = mintFee;
         i_callbackGasLimit = callbackGasLimit;
         _initializeContract();
+
+        // start from offset
+        for (i = 0; i < OFFSET_OF_METADATA_FILE_ID; i++) {
+            s_tokenCounter.increment();
+        }
     }
 
     function requestNft() public payable returns (uint256 requestId) {
@@ -80,7 +91,8 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
         s_tokenCounter.increment();
         address nftOwner = s_requestIdToSender[requestId];
         uint256 newItemId = s_tokenCounter.current();
-        uint256 uriMetadataFileID = randomWords[0] % MAX_ID_OF_METADATA_FILE;
+        uint256 uriMetadataFileID = (randomWords[0] % MAX_ID_OF_METADATA_FILE) +
+            OFFSET_OF_METADATA_FILE_ID;
 
         _safeMint(nftOwner, newItemId);
         string memory tokenUri = _getTokenUriWithItemId(uriMetadataFileID);
@@ -102,7 +114,7 @@ contract RandomGymBuddyWithSnap is ERC721URIStorage, VRFConsumerBaseV2, Ownable 
         returns (string memory)
     {
         string
-            memory cid = "bafybeigtxk3hoji67vd5gi66jxe774pdtfagdc7bb6mwdgfirv5zhdtorm";
+            memory cid = "bafybeidanoswtz7zj3oqe6n6a4bbs4ulscxsyzivbgd2fvusokc4sz6zjy";
         string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(
