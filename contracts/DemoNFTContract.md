@@ -1,0 +1,5 @@
+# DemoNFTContract changelog
+
+- deployments
+0xC2718Fbe99e408740eBad565334F6c8d8570B9AF
+0x23689b225A012d5205F0Cf6Ce6C31cb7BA8cFdA7

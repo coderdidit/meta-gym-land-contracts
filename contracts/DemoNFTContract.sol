@@ -15,7 +15,7 @@ contract DemoNFTContract is ERC721URIStorage, Ownable {
         marketplaceAddress = _marketplaceAddress;
         // automatically mint tokens to the contract deployer
         createToken(
-            "ipfs://bafkreidhxnlfze4kylymxxqtgb32tde332mqzrial7ha44tznwfcyezcre"
+            "ipfs://bafkreia2fp53rv3m67xeddzsy3agbtm5ue2mp3ei74gy7rqorfzkqmwq6i"
         );
     }
 
@@ -26,4 +26,3 @@ contract DemoNFTContract is ERC721URIStorage, Ownable {
         return itemID;
     }
 }
-
