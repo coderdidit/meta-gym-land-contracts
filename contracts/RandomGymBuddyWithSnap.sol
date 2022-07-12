@@ -51,7 +51,7 @@ contract RandomGymBuddyWithSnap is
         uint32 callbackGasLimit
     )
         VRFConsumerBaseV2(vrfCoordinatorV2)
-        ERC721("MetaGymLAnd GymBuddy", "MGLGB")
+        ERC721("MetaGymLand GymBuddy with Snap Lens", "MGLGBSL")
     {
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gasLane = gasLane;
@@ -107,7 +107,7 @@ contract RandomGymBuddyWithSnap is
         returns (string memory)
     {
         string
-            memory cid = "bafybeihami73qo4jfz76mqzqjk35jigkuqp4iglqna3g4cdlx5u6cv6f6q";
+            memory cid = "bafybeif624uyutlrvitfykzxxl2s5ooerpiwstk3rj4h4zskbn7k6ot55u";
         string memory baseUri = "ipfs://";
         string memory tokenMetadataURI = string(
             abi.encodePacked(
